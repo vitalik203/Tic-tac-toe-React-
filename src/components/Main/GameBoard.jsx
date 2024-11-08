@@ -1,23 +1,32 @@
 import React from 'react'
 
 const initialGameBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ]
+  [null, null, null],
+  [null, null, null],
+  [null, null, null]
+]
 
-export default function GameBoard() {
+export default function GameBoard({handleSelect}) {
+  const [square, setSquare] = React.useState(initialGameBoard)
+
+  function handleClick(row, col){
+
+    setSquare((previousBoard)=>{
+      const curentSymbol = handleSelect()
+      const updatedBoard = [...previousBoard.map((array)=>[...array])]
+      updatedBoard[row][col] = `${curentSymbol}`
+      return updatedBoard
+    })
+  }
+  
   return (
     <ol id="game-board">
-        {initialGameBoard.map((el, i)=>{
-            <li key={el}>
-                {el.map((el, i)=>{
-                <li key={el}>
-                    <button>{el}</button>
-                </li>
-            })}
-            </li>
-        })}
+        {square.map((el, rowIndex)=>
+        <li key={rowIndex}>
+          <ol>
+          {el.map((el, colIndex)=><li key={colIndex}><button onClick={() => handleClick(rowIndex, colIndex)}>{el}</button></li>)}
+          </ol>
+        </li>)}
     </ol>
   )
 }
