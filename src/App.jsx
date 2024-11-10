@@ -26,6 +26,8 @@ function App() {
         </ul>
         <GameBoard handleSelect={handleSelectSquare} />
       </section>
+      {/* Game output */}
+      
     </>
   )
 }
