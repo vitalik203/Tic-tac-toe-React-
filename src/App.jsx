@@ -23,23 +23,31 @@ function App() {
   const [activePlayer, setActivePlayer] = useState("X")
   const [square, setSquare] = useState(initialGameBoard)
   const [log, setLog] = useState([])
-
+  const [players, setPlayers] = useState({
+    X:"Player-1",
+    O:"Player-2"
+  })
   let winner
   
+  function handleRematch(){
+    setSquare(initialGameBoard)
+    setLog([])
+    setActivePlayer("X")
+  }
+
   WINNING_COMBINATIONS.forEach(combination=>{
     const firstValue = square[combination[0].row][combination[0].column]
     const secondValue = square[combination[1].row][combination[1].column]
     const thirdValue = square[combination[2].row][combination[2].column]
     
     if(firstValue && firstValue===secondValue && firstValue===thirdValue){
-      winner = firstValue
-      console.log(winner)
-    }
-    if(log.length === 9 && !winner){
-      winner=null
+      winner = players[firstValue]
     }
   })
   
+  if(!winner && log.length===9){
+    winner = "draw"
+  }
   
 
   function handleSelectSquare(){
@@ -63,16 +71,22 @@ function App() {
     })
   }
 
+  function handlePlayersName(symbol, name){
+    setPlayers(prevPlayer=>{
+      return {...prevPlayer, [symbol]: name}
+    })
+  }
+
 
   return (
     <> 
       <Header className="class_name" header_logo={logo}></Header>
       <section id="game-container">
         <ul id="players" className="highlight-player">
-            <Player name="Your name 1" isActive={activePlayer==="X"} symbol="X"></Player>
-            <Player name="Your name 2" isActive={activePlayer==="O"} symbol="O"></Player>
+            <Player handlePlayers={handlePlayersName} name={players.X} isActive={activePlayer==="X"} symbol="X"></Player>
+            <Player handlePlayers={handlePlayersName} name={players.O} isActive={activePlayer==="O"} symbol="O"></Player>
         </ul>
-        {winner && <GameOver win={winner} />}
+        {winner && <GameOver handleRematch={handleRematch} win={winner}/>}
         <GameBoard clickEvent={handleClick} squareLook={square}/>
       </section>
       <OutputGame datas={log} />
